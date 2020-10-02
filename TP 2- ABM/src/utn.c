@@ -157,7 +157,7 @@ int utn_getNombre(char* mensaje, char* mensajeError, char* pResultado,int reinte
 
 	if (reintentos == -1)
 		{
-				printf("Se ha quedado sin reintentos, favor intentar de nuevo \n");
+				printf("\nSe ha quedado sin reintentos, favor intentar de nuevo \n");
 		}
 	}
 	return retorno;

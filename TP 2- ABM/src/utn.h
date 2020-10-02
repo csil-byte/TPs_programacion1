@@ -14,10 +14,6 @@ int utn_getNumero(char* mensaje, char* mensajeError, int* pResultado,int reinten
 int getInt (int* pResultado);
 int esNumerica(char* cadena, int limite);
 int myGets(char* cadena, int longitud);
-
-
-
-
 int esUnNombreValido(char* cadena,int limite);
 int utn_getNombre(char* mensaje, char* mensajeError, char* pResultado,int reintentos, int limite);
 int utn_getNumeroFloat(float* pResultado,char* mensaje,char* mensajeError,float minimo,float maximo,int reintentos);
