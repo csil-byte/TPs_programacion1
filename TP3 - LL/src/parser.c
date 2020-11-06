@@ -97,7 +97,7 @@ int parser_EmployeeToText(FILE* pFile , LinkedList* pArrayListEmployee)
 	if (pFile != NULL && pArrayListEmployee != NULL)
 	{
 		len = ll_len(pArrayListEmployee);
-		fprintf(pFile, "==========ID, NOMBRE, HORAS TRABAJADAS, SUELDO\n============");
+		fprintf(pFile, "ID, NOMBRE, HORAS TRABAJADAS, SUELDO\n");
 		for (int i = 0; i < len; i++)
 		{
 			pEmployee = (Employee*)ll_get(pArrayListEmployee, i);
