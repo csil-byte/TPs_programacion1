@@ -14,8 +14,8 @@ int findEmployeeById(LinkedList* pArrayListEmployee, int id);
 int printByIndex(LinkedList* pArrayListEmployee, int index);
 void employee_delete(Employee* this);
 int controller_hardCode(LinkedList* pArrayListEmployee, char* name, char* horasTrabajadas, char* sueldo );
-int printAllEmployees(LinkedList* pArrayListEmployee);
-int controller_sort (LinkedList* pArrayListEmployee);
 
-int cliente_generarIdNuevo(LinkedList* pArrayListEmployee);
+
+
+int controller_generarIdNuevo(LinkedList* pArrayListEmployee);
 

@@ -13,7 +13,6 @@ static int isCuit(char* pResult);
 int utn_getCadenaNumerica(char* mensaje,char* mensajeError,char* pResultado,int minimo,int maximo,int reintentos)
 {
 	int retorno = -1;
-	int buffer;
 	char bufferString[LIMITE_BUFFER_STRING];
 
 	if(pResultado != NULL && mensaje != NULL && mensajeError != NULL && minimo <= maximo && reintentos >= 0)
@@ -60,22 +59,6 @@ int utn_verifyNumArray(char* array)
 	}
 	return retorno;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 static int isCuit(char string[])
 {
@@ -271,8 +254,6 @@ int utn_getTexto(char* mensaje, char* mensajeError, char* pResultado,int reinten
 		}
 	}
 	return retorno;}
-
-
 
 
 int utn_getNombre(char* mensaje, char* mensajeError, char* pResultado,int reintentos, int limite)
