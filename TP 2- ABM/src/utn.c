@@ -111,7 +111,7 @@ int esUnNombreValido(char* cadena,int limite)
 		//esta mal <----- A - Z -----> Esta mal
 		if(	(cadena[i] < 'A' || cadena[i] > 'Z') &&
 			(cadena[i] < 'a' || cadena[i] > 'z') &&
-			cadena[i] != '.')
+			cadena[i] == '.')
 		{
 			respuesta = 0;
 			break;
@@ -157,7 +157,7 @@ int utn_getNombre(char* mensaje, char* mensajeError, char* pResultado,int reinte
 
 	if (reintentos == -1)
 		{
-				printf("\nSe ha quedado sin reintentos, favor intentar de nuevo \n");
+				printf("Se ha quedado sin reintentos, favor intentar de nuevo \n");
 		}
 	}
 	return retorno;
@@ -230,12 +230,11 @@ int utn_getNumeroFloat(float* pResultado,char* mensaje,char* mensajeError,float 
 				*pResultado = bufferFloat;
 				retorno = 0;
 				break;
-			}else{
+			}else
+			{
 				printf("%s", mensajeError);
-				printf("\n-REINTENTOS: %d \n",reintentos);
 				reintentos--;
 			}
-
 		}while(reintentos >= 0);
 	}
 	return retorno;

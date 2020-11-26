@@ -651,7 +651,7 @@ LinkedList* ll_cloneFilter(LinkedList* this, int (*pFunc)(void*))
 	return auxList;
 }
 
-int ll_reduce(LinkedList* this, int (pFunc)(void), int* pResultado)
+int ll_reduce(LinkedList* this, int (*pFunc)(void*), int* pResultado)
 {
 	int returnAux=-1;
 	int len = ll_len(this);
@@ -662,7 +662,7 @@ int ll_reduce(LinkedList* this, int (pFunc)(void), int* pResultado)
 		for(int i=0;i<len;i++)
 		{
 			pElement = ll_get(this, i);
-			acc=+ pFunc(pElement);
+			acc+= pFunc(pElement);
 		}
 		*pResultado = acc;
 		returnAux=0;

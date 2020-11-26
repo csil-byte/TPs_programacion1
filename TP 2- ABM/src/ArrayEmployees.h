@@ -40,4 +40,7 @@ int employee_salaryAverage(Employee *pList, int len);
 int employee_validacionAlta (Employee* pList, int len);
 int employee_inform (Employee* pList, int len);
 int getMainMenu(int* menu);
+
+
+int employee_hardCode (Employee* pList, int len, char name[],char lastName[],float salary,int sector);
 #endif /* ARRAYEMPLOYEES_H_ */

@@ -58,7 +58,7 @@ int addEmployee(Employee* pList, int len, int id, char name[],char lastName[],fl
 		pList[indice].sector = sector;
 		pList[indice].salary = salary;
 		pList[indice].isEmpty = FALSE;
-		employee_printByIndex(pList, QTY_EMPLOYEES, indice);
+		printf("\n=========== Empleado agregado correctamente ==============\n\n");
 		retorno = 0;
 	}
 	return retorno;
@@ -99,31 +99,44 @@ find a employee] - (0) if Ok
 */
 int removeEmployee(Employee* pList, int len, int id)
 {
-int retorno = -1;
-int bufferIndex;
+	int retorno = -1;
+	int bufferIndex;
+	int confirmacion;
 
-if(pList != NULL && len > 0 && id > -1 && findEmployeeById(pList, QTY_EMPLOYEES, id) > -1 )
-{
-	bufferIndex = findEmployeeById(pList, QTY_EMPLOYEES, id);
-	if (pList[bufferIndex].isEmpty == FALSE)
+	if(pList != NULL && len > 0 && id > -1 )
 	{
-		printf ("Este ID corresponde al siguiente empleado: \n");
-		employee_printByIndex(pList, QTY_EMPLOYEES, bufferIndex);
-		pList[bufferIndex].isEmpty = TRUE;
-		retorno = 0;
+		if (findEmployeeById(pList, QTY_EMPLOYEES, id) > -1)
+		{
+			bufferIndex = findEmployeeById(pList, QTY_EMPLOYEES, id);
+			printf ("Este ID corresponde al siguiente empleado: \n");
+			employee_printByIndex(pList, QTY_EMPLOYEES, bufferIndex);
+
+			if ( !utn_getNumero("\n¿Está seguro de querer eliminar este empleado?\n 0 - Si\n 1 - No\n", "Error. Ingresar una opción válida\n", &confirmacion,2,1,0) &&
+					confirmacion == 0)
+			{
+				pList[bufferIndex].isEmpty = TRUE;
+				printf ("\n=======Empleado eliminado correctamente:========== \n");
+				retorno = 0;
+			}
+			else
+			{
+				retorno = 0;
+			}
+
+		}
+
+		else
+		{
+			printf ("Error, no se encuentra cargado ningún empleado con este ID. \nFavor volver a intentar\n");
+		}
 	}
-	else
-	{
-		printf ("Error, no se encuentra cargado ningún empleado con este ID.");
-	}
-}
-return retorno;
+	return retorno;
 }
 /*sortEmployees
 * \brief Sort the elements in the array of employees, the argument order indicate UP or DOWN order
 * \param list Employee*
 * \param len int
-* \param order int [1] indicate UP - [0] indicate DOWN
+* \param order int [1] indicate UP ASCENDANT  - [0] indicate DOWN DESCENDANT
 * \return int Return (-1) if Error [Invalid length or NULL pointer] - (0) if Ok
 */
 int sortEmployees(Employee* pList, int len, int orden)
@@ -142,9 +155,11 @@ int sortEmployees(Employee* pList, int len, int orden)
 				{
 					if (pList[i].isEmpty == FALSE && pList[i+1].isEmpty == FALSE)
 					{
-						if (strncmp(pList[i].lastName, pList[i+1].lastName, LAST_NAME) > 0 ||
-							(strncmp(pList[i].lastName, pList[i+1].lastName, LAST_NAME) == 0 &&
-									pList[i].sector > pList[i+1].sector))
+						if ((strcmp(pList[i].lastName, pList[i+1].lastName) < 0 && orden == 1) ||
+							((strcmp(pList[i].lastName, pList[i+1].lastName) > 0) && orden == 0)
+														||
+										((strcmp(pList[i].lastName, pList[i+1].lastName) == 0 && pList[i].sector < pList[i+1].sector) && orden == 1) ||
+										((strcmp(pList[i].lastName, pList[i+1].lastName) == 0 && pList[i].sector > pList[i+1].sector) && orden == 0))
 						{
 							flagSwap = 1;
 							bufferEmployee = pList[i];
@@ -158,7 +173,7 @@ int sortEmployees(Employee* pList, int len, int orden)
 	}
 	if (flagSwap == 0)
 	{
-		printEmployees(pList, QTY_EMPLOYEES);
+		//printEmployees(pList, QTY_EMPLOYEES);
 		retorno = 0;
 	}
 	return retorno;
@@ -179,7 +194,7 @@ if (pList != NULL &&  len > 0)
 	{
 		if (pList[i].isEmpty == FALSE)
 		{
-			printf ("[EMPLOYEES] Apellido: %s - Nombre: %s -  Sector %d - Salary %.2f  \n",pList[i].lastName, pList[i].name, pList[i].sector, pList[i].salary );
+			printf ("INDICE: %d - ID: %d - Nombre: %s - Apellido: %s -  Sector %d - Salary %.2f  \n", i, pList[i].id, pList[i].name,pList[i].lastName, pList[i].sector, pList[i].salary );
 			retorno = 0;
 		}
 	}
@@ -204,30 +219,29 @@ int employee_salaryAverage(Employee *pList, int len)
 	int totalEmployees = 0;
 
 	if(employee_validacionAlta (pList, QTY_EMPLOYEES) == 0 && pList != NULL && len > 0 )
+	{
+		for (int i = 0; i < len; i++)
+		{
+			if(pList[i].isEmpty == FALSE)
 			{
-				for (int i = 0; i < len; i++)
-				{
-						if(pList[i].isEmpty == FALSE)
-						{
-						totalSalary = totalSalary + pList[i].salary;
-						totalEmployees++;
-						}
-				}
-				printf("El salario total entre todos los empleados es: %d\n", totalSalary);
-				averageSalary = totalSalary / (float)totalEmployees;
-				printf("El promedio total entre los salarios de todos los empleados es: %.2f\n", averageSalary);
-
-
-				for (int i = 0; i < len; i++)
-						{
-							if(pList[i].isEmpty == FALSE && pList[i].salary > averageSalary)
-							{
-								aboveAverageSalary++;
-							}
-						}
-				printf("La cantidad de empleados que superan el sueldo promedio son: %d\n", aboveAverageSalary);
-				retorno = 0;
+				totalSalary = totalSalary + pList[i].salary;
+				totalEmployees++;
 			}
+		}
+		printf("El salario total entre todos los empleados es: %d\n", totalSalary);
+		averageSalary = totalSalary / (float)totalEmployees;
+		printf("El promedio total entre los salarios de todos los empleados es: %.2f\n", averageSalary);
+
+		for (int i = 0; i < len; i++)
+		{
+			if(pList[i].isEmpty == FALSE && pList[i].salary > averageSalary)
+			{
+				aboveAverageSalary++;
+			}
+		}
+		printf("La cantidad de empleados que superan el sueldo promedio son: %d\n", aboveAverageSalary);
+		retorno = 0;
+	}
 	return retorno;
 }
 /*inactive_Employee
@@ -242,11 +256,14 @@ int inactive_Employee (Employee* pList, int len)
 	int retorno = -1;
 	int bufferId;
 
-	if ( employee_validacionAlta (pList, QTY_EMPLOYEES) == 0 &&
-		utn_getNumero("Ingrese el ID del empleado al que desea dar de baja\n", "Error, ingrese un ID válido\n", &bufferId,2,1000000000,1) == 0)
+	if ( employee_validacionAlta (pList, QTY_EMPLOYEES) == 0 && pList != NULL && len > -1)
 	{
-		removeEmployee(pList, QTY_EMPLOYEES, bufferId);
-		retorno = 0;
+		printEmployees(pList, QTY_EMPLOYEES);
+		if (utn_getNumero("\nIngrese el ID del empleado al que desea dar de baja\n", "Error, ingrese un ID válido\n", &bufferId,2,1000000000,1) == 0)
+		{
+			removeEmployee(pList, QTY_EMPLOYEES, bufferId);
+			retorno = 0;
+		}
 	}
 
 	return retorno;
@@ -264,61 +281,72 @@ int employee_modificar (Employee* pList, int lim)
 	int menuModificacion;
 	int id;
 	int indice;
-	if (employee_validacionAlta (pList, QTY_EMPLOYEES) == 0 && pList != NULL && lim > 0 &&
-	utn_getNumero("Ingrese un campo a modificar\n: \n Opcion: 1- Nombre \n Opcion: 2- Apellido \n Opcion: 3- Salario \n Opcion: 4- Sector \n","Error, ingrese una opción válida\n",  &menuModificacion,2,4,1) == 0 &&
-	utn_getNumero("Ingrese el ID que desea modificar\n", "Error, ingrese una opción válida\n", &id,2,INT_MAX,1) == 0 &&
+
+
+	if (employee_validacionAlta (pList, QTY_EMPLOYEES) == 0 )
+	{
+		if ( pList != NULL && lim > 0 &&
+				utn_getNumero("Ingrese el ID que desea modificar\n", "Error, ingrese una opción válida\n", &id,2,INT_MAX,1) == 0 &&
 				findEmployeeById (pList, QTY_EMPLOYEES, id) > -1 )
 		{
 			indice = findEmployeeById (pList, QTY_EMPLOYEES, id);
-			if (pList[indice].isEmpty == FALSE )
-			{
-				printf("El ID %d corresponde al empleado: \n", id);
-				employee_printByIndex(pList, QTY_EMPLOYEES, indice);
-
-				switch (menuModificacion)
+			printf("El ID corresponde al empleado: ");
+			employee_printByIndex(pList, QTY_EMPLOYEES, indice);
+			do{
+				if (utn_getNumero("\nIngrese un campo a modificar:\n Opcion: 1- Nombre \n Opcion: 2- Apellido \n Opcion: 3- Salario \n Opcion: 4- Sector \n Opcion: 5- Salir \n","Error, ingrese una opción válida\n",  &menuModificacion,2,5,1) == 0 )
 				{
-				case 1:
-					if (  utn_getNombre("\n Nombre?","\nError",bufferList.name,2,FIRST_NAME) == 0   )
-					{
-						strncpy(pList[indice].name, bufferList.name, FIRST_NAME);
-						printf("Modificado correctamente\n");
-						employee_printByIndex(pList, QTY_EMPLOYEES, indice);
-						retorno = 0;
-					}
-					break;
-				case 2:
-					if (  utn_getNombre("\n Apellido?","\nError",bufferList.lastName,2,LAST_NAME) == 0   )
-					{
-						strncpy(pList[indice].lastName, bufferList.lastName, LAST_NAME);
-						printf("Modificado correctamente\n");
-						employee_printByIndex(pList, QTY_EMPLOYEES, indice);
-						retorno = 0;
-					}
-					break;
-				case 3:
-					if  (  utn_getNumeroFloat(&bufferList.salary,"\nSalario?","\nError",1,SALARY_MAX,2) == 0 )
-					{
-						pList[indice].salary = bufferList.salary;
-						printf("Modificado correctamente\n");
-						employee_printByIndex(pList, QTY_EMPLOYEES, indice);
-						retorno = 0;
-					}
-					break;
-				case 4:
-					if ( utn_getNumero("\nIngrese un sector:\n 1 - Administración \n 2 - Logística & Operaciones \n 3- Dirección \n 4- Financiero \n 5 - RRHH \n 6 - Comercial \n 7 - Compras ","\nError", &bufferList.sector,2,7,1) == 0  )
-					{
-						pList[indice].sector = bufferList.sector;
-						printf("Modificado correctamente\n");
-						employee_printByIndex(pList, QTY_EMPLOYEES, indice);
-						retorno = 0;
-					}
-					break;
-				}
-			}
-	}
 
-	return retorno;
-}
+					switch (menuModificacion)
+					{
+					case 1:
+						if (  utn_getNombre("Nombre?\n","\nError",bufferList.name,2,FIRST_NAME) == 0   )
+						{
+							strncpy(pList[indice].name, bufferList.name, FIRST_NAME);
+							printf("Modificado correctamente\n");
+							employee_printByIndex(pList, QTY_EMPLOYEES, indice);
+							retorno = 0;
+						}
+						break;
+					case 2:
+						if (  utn_getNombre("Apellido?\n","\nError",bufferList.lastName,2,LAST_NAME) == 0   )
+						{
+							strncpy(pList[indice].lastName, bufferList.lastName, LAST_NAME);
+							printf("Modificado correctamente\n");
+							employee_printByIndex(pList, QTY_EMPLOYEES, indice);
+							retorno = 0;
+						}
+						break;
+					case 3:
+						if  (  utn_getNumeroFloat(&bufferList.salary,"Salario?\n","\nError",1,SALARY_MAX,2) == 0 )
+						{
+							pList[indice].salary = bufferList.salary;
+							printf("Modificado correctamente\n");
+							employee_printByIndex(pList, QTY_EMPLOYEES, indice);
+							retorno = 0;
+						}
+						break;
+					case 4:
+						if ( utn_getNumero("Ingrese un sector:\n 1 - Administración \n 2 - Logística & Operaciones \n 3 - Dirección \n 4 - Financiero \n 5 - RRHH \n 6 - Comercial \n 7 - Compras ","\nError", &bufferList.sector,2,7,1) == 0  )
+						{
+							pList[indice].sector = bufferList.sector;
+							printf("Modificado correctamente\n");
+							employee_printByIndex(pList, QTY_EMPLOYEES, indice);
+							retorno = 0;
+						}
+						break;
+					case 5:
+						break;
+					}
+				}
+			}while (menuModificacion != 5);
+		}
+		if (findEmployeeById (pList, QTY_EMPLOYEES, id) == -1)
+		{
+			printf("Este empleado no se encuentra registrado en el sistema. Favor volver a intentar\n");
+		}
+	}
+		return retorno;
+	}
 /*getEmployeeInfo
 * \brief function is in charge of asking users input in order to later call addEmployee to add employee to array. For sector, fictional names have been added for the sake of easier input but can be easily removed.
 * \param list Employee* Pointer to array of employees
@@ -338,18 +366,15 @@ int getEmployeeInfo(Employee* pList, int lim)
 	if (employee_buscadorIndiceLibre (pList, QTY_EMPLOYEES) > -1)
 	{
 		indice = employee_buscadorIndiceLibre (pList, QTY_EMPLOYEES);
-
-		if(	    (  utn_getNombre("\n Nombre?","\nError",name,2,FIRST_NAME) == 0   ) &&
-				( utn_getNombre("\n Apellido?","\nError",lastName,2,LAST_NAME) == 0 ) &&
-				(  utn_getNumeroFloat(&salary,"\nSalario?","\nError",1,SALARY_MAX,2) == 0 ) &&
-				( utn_getNumero("\nIngrese un sector:\n 1 - Administración \n 2 - Logística & Operaciones \n 3- Dirección \n 4- Financiero \n 5 - RRHH \n 6 - Comercial \n 7 - Compras ","\nError\n", &sector,2,7,1) == 0  ))
+		if(	    ( utn_getNombre("Nombre?\n","\nError, favor ingresar un nombre válido\n",name,2,FIRST_NAME) == 0   ) &&
+				( utn_getNombre("Apellido?\n","\nError, favor ingresar un apellido válido\n",lastName,2,LAST_NAME) == 0 ) &&
+				( utn_getNumeroFloat(&salary,"Salario?\n","\nError\n",1,SALARY_MAX,2) == 0 ) &&
+				( utn_getNumero("Ingrese un sector:\n 1 - Administración \n 2 - Logística & Operaciones \n 3 - Dirección \n 4 - Financiero \n 5 - RRHH \n 6 - Comercial \n 7 - Compras ","\nError\n", &sector,2,7,1) == 0  ))
 		{
-
 			id = employee_generarIdNuevo();
 			pList[indice].id = id;
 			addEmployee(pList, QTY_EMPLOYEES, id, name,lastName,salary,sector);
 			retorno = 0;
-
 		}
 	}
 
@@ -380,7 +405,6 @@ int employee_buscadorIndiceLibre (Employee* pList, int len)
 		{
 			if (pList[i].isEmpty == TRUE)
 			{
-
 				retorno = i;
 				break;
 			}
@@ -402,7 +426,7 @@ int employee_printByIndex(Employee* pList, int limit, int index)
 		{
 			if(pList[index].isEmpty == FALSE)
 			{
-				printf("Nombre: %s - Apellido: %s - Sector: %d - Salary: %.2f  \n",pList[index].name, pList[index].lastName, pList[index].sector, pList[index].salary );
+				printf("INDICE: %d - ID: %d - Nombre: %s - Apellido: %s - Sector: %d - Salary: %.2f  \n",index, pList[index].id, pList[index].name, pList[index].lastName, pList[index].sector, pList[index].salary );
 				retorno = 0;
 			}
 		}
@@ -446,30 +470,33 @@ int employee_inform (Employee* pList, int len)
 	int retorno = -1;
 	int menu;
 
-	if (employee_validacionAlta (pList, QTY_EMPLOYEES) == 0 && pList != NULL && len > 0 && utn_getNumero("Elegir:\n 1- Listado de los empleados ordenados alfabéticamente por Apellido y Sector.\n 2- Total y promedio de los salarios, y cuántos empleados superan el salario promedio. \n 3- Salir\n","Error, ingrese una opción válida\n", &menu,2,3,1) == 0)
+	if (employee_validacionAlta (pList, QTY_EMPLOYEES) == 0 && pList != NULL && len > 0 )
 	{
 		do
 		{
-			switch (menu)
+			if (utn_getNumero("\nElegir:\n 1- Listado de los empleados ordenados alfabéticamente por Apellido y Sector.\n 2- Total y promedio de los salarios, y cuántos empleados superan el salario promedio. \n 3- Salir\n","Error, ingrese una opción válida\n", &menu,2,3,1) == 0)
 			{
-			case 1:
-				if (sortEmployees(pList, QTY_EMPLOYEES, 0)== 0)
+				switch (menu)
 				{
-					retorno = 0;
+				case 1:
+					if (sortEmployees(pList, QTY_EMPLOYEES, 0) == 0)
+					{
+						printEmployees(pList, QTY_EMPLOYEES);
+						retorno = 0;
+					}
+					break;
+				case 2:
+					if (employee_salaryAverage(pList, QTY_EMPLOYEES) == 0)
+					{
+						retorno = 0;
+					}
+					break;
+				case 3:
+					printf("Programa finalizado\n");
+					break;
 				}
-				break;
-			case 2:
-				if (employee_salaryAverage(pList, QTY_EMPLOYEES) == 0)
-				{
-					retorno = 0;
-				}
-				break;
-			case 3:
-				printf("Programa finalizado\n");
-				exit(0);
 			}
-		}while( menu != 4);
-
+		} while (menu != 3);
 	}
 	return retorno;
 }
@@ -497,3 +524,24 @@ int getMainMenu(int* menu)
 
 }
 
+int employee_hardCode (Employee* pList, int len, char name[],char lastName[],float salary,int sector)
+{
+	int retorno = -1;
+	int indice;
+	int id;
+
+	if ( pList != NULL && len > 0  && (employee_buscadorIndiceLibre (pList, QTY_EMPLOYEES)  > -1))
+	{
+		indice = employee_buscadorIndiceLibre (pList, QTY_EMPLOYEES);
+		strncpy(pList[indice].name, name, FIRST_NAME);
+		strncpy(pList[indice].lastName, lastName, LAST_NAME);
+		id = employee_generarIdNuevo();
+		pList[indice].id = id;
+		pList[indice].sector = sector;
+		pList[indice].salary = salary;
+		pList[indice].isEmpty = FALSE;
+		employee_printByIndex(pList, QTY_EMPLOYEES, indice);
+		retorno = 0;
+	}
+	return retorno;
+}
